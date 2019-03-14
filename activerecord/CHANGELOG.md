@@ -1,3 +1,16 @@
+*   Add `ActiveRecord::Relation#with_annotation` for adding SQL comments to its queries.
+
+    For example:
+
+    ```
+    Post.where(id: 123).with_annotation("this is a comment").to_sql
+    # SELECT "posts"."*" FROM "posts" WHERE "posts"."id" = 123 /* this is a comment */
+    ```
+
+    This can be useful in instrumentation or other analysis of issued queries.
+
+    *Matt Yoho*
+
 *   Fix query attribute method on user-defined attribute to be aware of typecasted value.
 
     For example, the following code no longer return false as casted non-empty string:
