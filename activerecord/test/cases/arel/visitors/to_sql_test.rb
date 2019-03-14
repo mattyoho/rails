@@ -708,6 +708,28 @@ module Arel
           }
         end
       end
+
+      describe "Nodes::Annotation" do
+        it "wraps a comment in multiline delimiters with space characters around the content" do
+          node = Arel::Nodes::Annotation.new "omg"
+          compile(node).must_be_like %{ /\* omg \*/ }
+        end
+
+        it "separates two sub-comments with a space" do
+          node = Arel::Nodes::Annotation.new "omg", "bbq"
+          compile(node).must_be_like %{ /\* omg bbq \*/ }
+        end
+
+        it "disallows attempted hint injection" do
+          node = Arel::Nodes::Annotation.new "+ MAX_EXECUTION_TIME(50000)"
+          compile(node).must_be_like %{ /\* + MAX_EXECUTION_TIME(50000) \*/ }
+        end
+
+        it "places a comment within a subquery" do
+          mgr = Table.new(:foo).project(:bar).comment("omg")
+          compile(mgr).must_be_like '(SELECT bar FROM "foo" /* omg */)'
+        end
+      end
     end
   end
 end

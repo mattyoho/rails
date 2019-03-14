@@ -65,6 +65,16 @@ module Arel
       end
     end
 
+    describe "comment" do
+      it "should append a comment" do
+        sm = @relation.comment("table")
+        sm.to_sql.must_be_like "SELECT FROM \"users\" /* table */"
+
+        sm = @relation.comment("foo", "bar")
+        sm.to_sql.must_be_like "SELECT FROM \"users\" /* foo bar */"
+      end
+    end
+
     describe "backwards compat" do
       describe "join" do
         it "noops on nil" do

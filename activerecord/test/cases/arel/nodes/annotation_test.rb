@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+require_relative "../helper"
+require "yaml"
+
+module Arel
+  module Nodes
+    class AnnotationTest < Arel::Spec
+      before do
+        @visitor = Visitors::ToSql.new Table.engine.connection
+      end
+
+      def compile(node)
+        @visitor.accept(node, Collectors::SQLString.new).value
+      end
+
+      describe "equality" do
+        it "is equal with equal contents" do
+          array = [Annotation.new("foo"), Annotation.new("foo")]
+          assert_equal 1, array.uniq.size
+        end
+
+        it "is not equal with different contents" do
+          array = [Annotation.new("foo"), Annotation.new("bar")]
+          assert_equal 2, array.uniq.size
+        end
+      end
+
+      describe "SQL injection protection" do
+        it "strips SQL comment delimiters from value" do
+          node = Annotation.new("*/foo/*")
+          compile(node).must_be_like %{ /* foo */ }
+
+          node = Annotation.new("**//foo//**")
+          compile(node).must_be_like %{ /* foo */ }
+
+          node = Annotation.new("*/foo/*", "*/bar")
+          compile(node).must_be_like %{ /* foo bar */ }
+        end
+      end
+    end
+  end
+end

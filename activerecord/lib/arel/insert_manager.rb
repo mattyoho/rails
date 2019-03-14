@@ -38,6 +38,11 @@ module Arel # :nodoc: all
       self
     end
 
+    def comment(*values)
+      @ast.comment = Nodes::Annotation.new(*values)
+      self
+    end
+
     def create_values(values, columns)
       Nodes::Values.new values, columns
     end

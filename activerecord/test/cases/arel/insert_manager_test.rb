@@ -238,5 +238,29 @@ module Arel
         }
       end
     end
+
+    describe "comment" do
+      it "chains" do
+        manager = Arel::InsertManager.new
+        manager.comment("inserting").must_equal manager
+      end
+
+      it "appends a comment to the generated query" do
+        table   = Table.new :users
+
+        manager = Arel::InsertManager.new
+        manager.into table
+
+        manager.comment("inserting")
+        manager.to_sql.must_be_like %{
+          INSERT INTO "users" /* inserting */
+        }
+
+        manager.comment("inserting", "with", "comment")
+        manager.to_sql.must_be_like %{
+          INSERT INTO "users" /* inserting with comment */
+        }
+      end
+    end
   end
 end

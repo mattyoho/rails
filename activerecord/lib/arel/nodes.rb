@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# util
+require "arel/nodes/sql_comment_sanitization"
+
 # node
 require "arel/nodes/node"
 require "arel/nodes/node_expression"
@@ -61,6 +64,8 @@ require "arel/nodes/inner_join"
 require "arel/nodes/outer_join"
 require "arel/nodes/right_outer_join"
 require "arel/nodes/string_join"
+
+require "arel/nodes/annotation"
 
 require "arel/nodes/sql_literal"
 

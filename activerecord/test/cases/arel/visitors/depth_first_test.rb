@@ -100,6 +100,12 @@ module Arel
         assert_equal [:a, :b, join], @collector.calls
       end
 
+      def test_annotation
+        annotation = Nodes::Annotation.new "foo"
+        @visitor.accept annotation
+        assert_equal ["foo", ["foo"], annotation], @collector.calls
+      end
+
       [
         Arel::Nodes::Assignment,
         Arel::Nodes::Between,
