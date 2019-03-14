@@ -307,6 +307,49 @@ module ActiveRecord
       assert_equal 3, ratings.count
     end
 
+    def test_relation_with_annotation_includes_comment_in_to_sql
+      post_with_annotation = Post.where(id: 1).with_annotation("foo")
+      assert_equal %{SELECT "posts".* FROM "posts" WHERE "posts"."id" = 1 /* foo */}, post_with_annotation.to_sql
+    end
+
+    def test_relation_with_annotation_includes_comment_in_sql
+      post_with_annotation = Post.where(id: 1).with_annotation("foo")
+      assert_sql(%r{/\* foo \*/}) do
+        assert post_with_annotation.first, "record should be found"
+      end
+    end
+
+    def test_relation_with_annotation_chains_sql_comments
+      post_with_annotation = Post.where(id: 1).with_annotation("foo").with_annotation("-bar")
+      assert_sql(%r{/\* foo-bar \*/}) do
+        assert post_with_annotation.first, "record should be found"
+      end
+    end
+
+    def test_relation_with_annotation_filters_sql_comment_delimiters
+      post_with_annotation = Post.where(id: 1).with_annotation("**//foo//**")
+      assert_equal %{SELECT "posts".* FROM "posts" WHERE "posts"."id" = 1 /* foo */}, post_with_annotation.to_sql
+    end
+
+    def test_relation_with_annotation_includes_comment_in_count_query
+      post_with_annotation = Post.with_annotation("foo")
+      all_count = Post.all.to_a.count
+      assert_sql(%r{/\* foo \*/}) do
+        assert_equal all_count, post_with_annotation.count
+      end
+    end
+
+    def test_relation_without_annotation_does_not_include_an_empty_comment
+      post_with_annotation = Post.where(id: 1)
+
+      log = assert_sql do
+        post_with_annotation.first
+      end
+
+      assert_not_predicate log, :empty?
+      assert_predicate log.select { |query| query.match?(%r{/\*}) }, :empty?
+    end
+
     class EnsureRoundTripTypeCasting < ActiveRecord::Type::Value
       def type
         :string

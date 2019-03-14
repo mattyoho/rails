@@ -925,6 +925,20 @@ module ActiveRecord
       self
     end
 
+    # Adds an SQL comment to queries generated from this relation. For example:
+    #
+    #   User.with_annotation("selecting user names").select(:name)
+    #   # SELECT "users"."name" FROM "users" /* selecting user names */
+    def with_annotation(comment)
+      spawn.with_annotation!(comment)
+    end
+
+    # Like #with_annotation, but modifies relation in place.
+    def with_annotation!(comment) # :nodoc:
+      self.with_annotation_values += [comment]
+      self
+    end
+
     # Returns the Arel object associated with the relation.
     def arel(aliases = nil) # :nodoc:
       @arel ||= build_arel(aliases)
@@ -980,6 +994,12 @@ module ActiveRecord
         arel.distinct(distinct_value)
         arel.from(build_from) unless from_clause.empty?
         arel.lock(lock_value) if lock_value
+
+        with_annotation_values.reject(&:nil?).tap do |annotations|
+          if annotations.any?
+            arel.comment(annotations.join)
+          end
+        end
 
         arel
       end

@@ -135,6 +135,15 @@ class RelationMergingTest < ActiveRecord::TestCase
     relation = Post.all.merge(Post.order(Arel.sql("title LIKE '%?'")))
     assert_equal ["title LIKE '%?'"], relation.order_values
   end
+
+  def test_merging_with_annotations_respects_merge_order
+    assert_sql(%r{/\* foo-bar \*/}) do
+      Post.with_annotation("foo").merge(Post.with_annotation("-bar")).first
+    end
+    assert_sql(%r{/\* -barfoo \*/}) do
+      Post.with_annotation("-bar").merge(Post.with_annotation("foo")).first
+    end
+  end
 end
 
 class MergingDifferentRelationsTest < ActiveRecord::TestCase

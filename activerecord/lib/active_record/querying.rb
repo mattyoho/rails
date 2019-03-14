@@ -15,7 +15,7 @@ module ActiveRecord
       :select, :reselect, :order, :reorder, :group, :limit, :offset, :joins, :left_joins, :left_outer_joins,
       :where, :rewhere, :preload, :eager_load, :includes, :from, :lock, :readonly, :extending, :or,
       :having, :create_with, :distinct, :references, :none, :unscope, :merge, :except, :only,
-      :count, :average, :minimum, :maximum, :sum, :calculate,
+      :count, :average, :minimum, :maximum, :sum, :calculate, :with_annotation,
       :pluck, :pick, :ids
     ].freeze # :nodoc:
     delegate(*QUERYING_METHODS, to: :all)

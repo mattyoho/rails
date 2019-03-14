@@ -98,3 +98,16 @@ class FamousPirate < ActiveRecord::Base
   has_many :famous_ships
   validates_presence_of :catchphrase, on: :conference
 end
+
+class SpacePirate < ActiveRecord::Base
+  self.table_name = "pirates"
+
+  belongs_to :parrot
+  belongs_to :parrot_with_annotation, -> { with_annotation("that tells jokes") }, class_name: :Parrot, foreign_key: :parrot_id
+  has_and_belongs_to_many :parrots, foreign_key: :pirate_id
+  has_and_belongs_to_many :parrots_with_annotation, -> { with_annotation("that are very colorful") }, class_name: :Parrot, foreign_key: :pirate_id
+  has_one :ship, foreign_key: :pirate_id
+  has_one :ship_with_annotation, -> { with_annotation("that is a rocket") }, class_name: :Ship, foreign_key: :pirate_id
+  has_many :birds, foreign_key: :pirate_id
+  has_many :birds_with_annotation, -> { with_annotation("that are also parrots") }, class_name: :Bird, foreign_key: :pirate_id
+end
