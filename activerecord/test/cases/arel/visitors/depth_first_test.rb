@@ -100,6 +100,12 @@ module Arel
         assert_equal [:a, :b, join], @collector.calls
       end
 
+      def test_comment
+        comment = Nodes::Comment.new "foo"
+        @visitor.accept comment
+        assert_equal ["foo", comment], @collector.calls
+      end
+
       [
         Arel::Nodes::Assignment,
         Arel::Nodes::Between,

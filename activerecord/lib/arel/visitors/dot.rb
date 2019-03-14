@@ -233,6 +233,10 @@ module Arel # :nodoc: all
         end
         alias :visit_Set :visit_Array
 
+        def visit_Arel_Nodes_Comment(o)
+          visit_edge(o, "value")
+        end
+
         def visit_edge(o, method)
           edge(method) { visit o.send(method) }
         end

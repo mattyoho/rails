@@ -36,6 +36,11 @@ module Arel # :nodoc: all
         @ast.wheres << expr
         self
       end
+
+      def comment(cmt)
+        @ast.comment = Nodes::Comment.new(cmt)
+        self
+      end
     end
 
     attr_reader :ast

@@ -78,6 +78,10 @@ module Arel # :nodoc: all
       from.having expr
     end
 
+    def comment(cmt)
+      from.comment cmt
+    end
+
     def [](name)
       ::Arel::Attribute.new self, name
     end

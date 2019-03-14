@@ -122,5 +122,24 @@ module Arel
         @um.key.must_equal @table[:foo]
       end
     end
+
+    describe "comment" do
+      it "chains" do
+        manager = Arel::UpdateManager.new
+        manager.comment("updating").must_equal manager
+      end
+
+      it "appends a comment to the generated query" do
+        table   = Table.new :users
+
+        manager = Arel::UpdateManager.new
+        manager.table table
+
+        manager.comment("updating")
+        manager.to_sql.must_be_like %{
+          UPDATE "users" /* updating */
+        }
+      end
+    end
   end
 end

@@ -708,6 +708,18 @@ module Arel
           }
         end
       end
+
+      describe "Nodes::Comment" do
+        it "should wrap a comment in multiline delimiters" do
+          node = Arel::Nodes::Comment.new "omg"
+          compile(node).must_be_like %{ /\* omg \*/ }
+        end
+
+        it "should place a comment within a subquery" do
+          mgr = Table.new(:foo).project(:bar).comment("omg")
+          compile(mgr).must_be_like '(SELECT bar FROM "foo" /* omg */)'
+        end
+      end
     end
   end
 end
