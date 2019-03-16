@@ -43,7 +43,7 @@ module Arel # :nodoc: all
         end
 
         def visit_Arel_Nodes_OptimizerHints(o, collector)
-          collector << "/*+ #{sanitize_as_sql_comment(o).join(", ")} */"
+          collector << "/*+ #{o.values.join(", ")} */"
         end
 
         def visit_Arel_Nodes_Offset(o, collector)

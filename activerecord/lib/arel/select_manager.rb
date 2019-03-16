@@ -148,7 +148,7 @@ module Arel # :nodoc: all
 
     def optimizer_hints(*hints)
       unless hints.empty?
-        @ctx.optimizer_hints = Arel::Nodes::OptimizerHints.new(hints)
+        @ctx.optimizer_hints = Arel::Nodes::OptimizerHints.new(*hints)
       end
       self
     end

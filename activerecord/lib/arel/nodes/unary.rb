@@ -35,7 +35,6 @@ module Arel # :nodoc: all
       Not
       Offset
       On
-      OptimizerHints
       Ordering
       RollUp
     }.each do |name|

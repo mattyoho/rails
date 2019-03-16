@@ -17,12 +17,6 @@ if supports_optimizer_hints?
         posts = posts.select(:id).where(author_id: [0, 1])
         assert_includes posts.explain, "Seq Scan on posts"
       end
-
-      assert_sql(%r{\ASELECT /\*\+ SeqScan\(posts\) \*/}) do
-        posts = Post.optimizer_hints("/*+ SeqScan(posts) */")
-        posts = posts.select(:id).where(author_id: [0, 1])
-        assert_includes posts.explain, "Seq Scan on posts"
-      end
     end
   end
 end

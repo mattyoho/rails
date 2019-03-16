@@ -82,7 +82,6 @@ module Arel # :nodoc: all
         alias :visit_Arel_Nodes_Offset            :unary
         alias :visit_Arel_Nodes_On                :unary
         alias :visit_Arel_Nodes_UnqualifiedColumn :unary
-        alias :visit_Arel_Nodes_OptimizerHints    :unary
         alias :visit_Arel_Nodes_Preceding         :unary
         alias :visit_Arel_Nodes_Following         :unary
         alias :visit_Arel_Nodes_Rows              :unary
@@ -237,6 +236,7 @@ module Arel # :nodoc: all
         def visit_Arel_Nodes_Annotation(o)
           visit_edge(o, "values")
         end
+        alias :visit_Arel_Nodes_OptimizerHints :visit_Arel_Nodes_Annotation
 
         def visit_edge(o, method)
           edge(method) { visit o.send(method) }
